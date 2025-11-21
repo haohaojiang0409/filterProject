@@ -7,7 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		44766DD22ECF003200814D30 /* bloom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44766DD12ECF002900814D30 /* bloom.cpp */; };
+		44766DD72ECF0C5800814D30 /* bloom.c in Sources */ = {isa = PBXBuildFile; fileRef = 44766DD62ECF0C5800814D30 /* bloom.c */; };
+		44766DDC2ECF108900814D30 /* MurmurHash2.c in Sources */ = {isa = PBXBuildFile; fileRef = 44766DD92ECF108900814D30 /* MurmurHash2.c */; };
+		44766DDD2ECF108900814D30 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 44766DDA2ECF108900814D30 /* README */; };
+		44766DE02ED0099A00814D30 /* Rule.m in Sources */ = {isa = PBXBuildFile; fileRef = 44766DDF2ED0099800814D30 /* Rule.m */; };
+		44766DE22ED0113B00814D30 /* rule.json in Resources */ = {isa = PBXBuildFile; fileRef = 44766DE12ED0113B00814D30 /* rule.json */; };
 		63938C572A38BCD600734619 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 63938C562A38BCD600734619 /* AppDelegate.m */; };
 		63938C5A2A38BCD600734619 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63938C592A38BCD600734619 /* ViewController.m */; };
 		63938C5C2A38BCD800734619 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63938C5B2A38BCD800734619 /* Assets.xcassets */; };
@@ -76,9 +80,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		44766DD02ECF001B00814D30 /* bloom.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = bloom.hpp; sourceTree = "<group>"; };
-		44766DD12ECF002900814D30 /* bloom.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = bloom.cpp; sourceTree = "<group>"; };
-		44766DD42ECF026300814D30 /* const.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = const.hpp; sourceTree = "<group>"; };
+		44766DD52ECF0C5800814D30 /* bloom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bloom.h; sourceTree = "<group>"; };
+		44766DD62ECF0C5800814D30 /* bloom.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = bloom.c; sourceTree = "<group>"; };
+		44766DD82ECF108900814D30 /* murmurhash2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = murmurhash2.h; sourceTree = "<group>"; };
+		44766DD92ECF108900814D30 /* MurmurHash2.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = MurmurHash2.c; sourceTree = "<group>"; };
+		44766DDA2ECF108900814D30 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		44766DDE2ED0099200814D30 /* Rule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rule.h; sourceTree = "<group>"; };
+		44766DDF2ED0099800814D30 /* Rule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Rule.m; sourceTree = "<group>"; };
+		44766DE12ED0113B00814D30 /* rule.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = rule.json; sourceTree = "<group>"; };
 		6378C61A2A47B85100E1D2C4 /* libEndpointSecurity.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libEndpointSecurity.tbd; path = usr/lib/libEndpointSecurity.tbd; sourceTree = SDKROOT; };
 		6378C62F2A47F1A400E1D2C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		63938C522A38BCD600734619 /* BorderControl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BorderControl.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -121,6 +130,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		44766DDB2ECF108900814D30 /* murmur2 */ = {
+			isa = PBXGroup;
+			children = (
+				44766DD82ECF108900814D30 /* murmurhash2.h */,
+				44766DD92ECF108900814D30 /* MurmurHash2.c */,
+				44766DDA2ECF108900814D30 /* README */,
+			);
+			path = murmur2;
+			sourceTree = "<group>";
+		};
 		63938C492A38BCD600734619 = {
 			isa = PBXGroup;
 			children = (
@@ -149,6 +168,7 @@
 				63938C582A38BCD600734619 /* ViewController.h */,
 				63938C592A38BCD600734619 /* ViewController.m */,
 				63938C5D2A38BCD800734619 /* Main.storyboard */,
+				44766DE12ED0113B00814D30 /* rule.json */,
 				63938C602A38BCD800734619 /* main.m */,
 				63938C5B2A38BCD800734619 /* Assets.xcassets */,
 				63938C622A38BCD800734619 /* BorderControl.entitlements */,
@@ -170,11 +190,13 @@
 		63938C712A38BD2C00734619 /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				44766DD42ECF026300814D30 /* const.hpp */,
-				44766DD12ECF002900814D30 /* bloom.cpp */,
-				44766DD02ECF001B00814D30 /* bloom.hpp */,
+				44766DDB2ECF108900814D30 /* murmur2 */,
+				44766DD52ECF0C5800814D30 /* bloom.h */,
+				44766DD62ECF0C5800814D30 /* bloom.c */,
 				63938C722A38BD2C00734619 /* AppFilterProvider.h */,
 				63938C732A38BD2C00734619 /* AppFilterProvider.m */,
+				44766DDE2ED0099200814D30 /* Rule.h */,
+				44766DDF2ED0099800814D30 /* Rule.m */,
 				63938C752A38BD2C00734619 /* main.m */,
 				63938C772A38BD2C00734619 /* Info.plist */,
 				63938C782A38BD2C00734619 /* Network.entitlements */,
@@ -274,6 +296,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44766DE22ED0113B00814D30 /* rule.json in Resources */,
+				44766DDD2ECF108900814D30 /* README in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,9 +319,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44766DE02ED0099A00814D30 /* Rule.m in Sources */,
+				44766DDC2ECF108900814D30 /* MurmurHash2.c in Sources */,
+				44766DD72ECF0C5800814D30 /* bloom.c in Sources */,
 				63938C762A38BD2C00734619 /* main.m in Sources */,
 				63938C742A38BD2C00734619 /* AppFilterProvider.m in Sources */,
-				44766DD22ECF003200814D30 /* bloom.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
