@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <NetworkExtension/NetworkExtension.h>
 
 @interface FirewallTuple : NSObject
 // 目标（远程）
@@ -34,4 +35,10 @@
 + (instancetype)ruleWithDictionary:(NSDictionary *)dict;
 
 - (NSComparisonResult)compareByPriority:(FirewallRule *)other;
+
+- (BOOL)matchesHostname:(NSString *)hostname
+             remotePort:(NSInteger)remotePort
+              localPort:(NSInteger)localPort
+               protocol:(NSString *)protocol
+              direction:(NETrafficDirection)direction;
 @end

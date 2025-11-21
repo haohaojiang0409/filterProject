@@ -9,7 +9,7 @@
 #define _BLOOM_H
 
 //#define __BLOOM__
-//#define __JSON__
+
 #define BLOOM_VERSION_MAJOR 2
 #define BLOOM_VERSION_MINOR 0
 

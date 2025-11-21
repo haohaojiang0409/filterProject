@@ -61,23 +61,62 @@
     return [host hasSuffix:suffix] && [host rangeOfString:@"."].location != NSNotFound;
 }
 
--(BOOL)matchesHostName:(NSString*)hostname port:(NSInteger)port protocol:(NSString*)proto direction:(NSString *)dir{
-    if(self.direction && ![self.direction isEqualToString:@"any"]){
+- (BOOL)matchesHostname:(NSString *)hostname
+             remotePort:(NSInteger)remotePort
+              localPort:(NSInteger)localPort
+               protocol:(NSString *)protocol
+              direction:(NETrafficDirection)direction {
+    // 1. 方向匹配（你的规则可能只针对 outbound）
+    if (self.direction != NETrafficDirectionAny && self.direction != direction) {
         return NO;
     }
+
+    // 2. 协议匹配（支持 "tcp", "udp", "any"）
+    if (![self.protocols containsObject:@"any"] &&
+        ![self.protocols containsObject:protocol]) {
+        return NO;
+    }
+
+    // 3. 端口和主机匹配（遍历 tuples）
+    for (FirewallTuple *tuple in self.tuples) {
+        // 主机匹配：支持通配符或精确匹配
+        BOOL hostMatch = [self hostMatches:tuple.dstHost target:hostname];
+        
+        // 端口匹配：支持 "0" 表示任意端口，或具体端口列表
+        BOOL portMatch = [self portMatches:tuple.dstPorts targetPort:remotePort];
+        
+        if (hostMatch && portMatch) {
+            return YES;
+        }
+    }
     
-    for(FirewallTuple* tuple in self.tuples){
-        if(![self wildcardMatch:tuple host:hostname]){
-            continue;
+    return NO;
+}
+
+// 辅助方法：主机匹配（简单版：精确 or 通配符 *.example.com）
+- (BOOL)hostMatches:(NSString *)pattern target:(NSString *)target {
+    if ([pattern isEqualToString:@"*"] || [pattern isEqualToString:target]) {
+        return YES;
+    }
+    // 支持 *.example.com → 匹配 a.example.com, b.c.example.com
+    if ([pattern hasPrefix:@"*."]) {
+        NSString *suffix = [pattern substringFromIndex:2]; // 去掉 "*."
+        return [target hasSuffix:suffix] &&
+               [target rangeOfString:@"."].location != NSNotFound; // 至少有一个点
+    }
+    return NO;
+}
+
+// 辅助方法：端口匹配
+- (BOOL)portMatches:(NSArray<NSString *> *)allowedPorts targetPort:(NSInteger)target {
+    if ([allowedPorts containsObject:@"0"] || [allowedPorts containsObject:@"*"]) {
+        return YES;
+    }
+    for (NSString *portStr in allowedPorts) {
+        NSInteger port = [portStr integerValue];
+        if (port == target) {
+            return YES;
         }
-        BOOL portMatch = NO;
-        for(NSString* p in tuple.dstPorts){
-            if ([p isEqualToString:@"0"] || [p integerValue] == port) {
-               portMatch = YES;
-               break;
-            }
-        }
-        if(portMatch) return YES;
     }
     return NO;
 }

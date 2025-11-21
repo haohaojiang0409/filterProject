@@ -58,6 +58,9 @@
 
     // 🚀 3. 应用设置并启动过滤
     [self applySettings:filterSettings completionHandler:completionHandler];
+    
+    //4.处理出站数据包
+    
 }
 
 #ifdef __BLOOM__
@@ -84,60 +87,76 @@
 }
 
 - (NEFilterNewFlowVerdict *)handleNewFlow:(NEFilterFlow *)flow {
-#ifdef ___JSON__
-    NEFilterSocketFlow *socketFlow = (NEFilterSocketFlow*)flow;
-    
+    NEFilterSocketFlow *socketFlow = (NEFilterSocketFlow *)flow;
+
     // 1. 获取远程和本地端点信息
     NWHostEndpoint *remoteEndpoint = (NWHostEndpoint *)socketFlow.remoteEndpoint;
     NWHostEndpoint *localEndpoint  = (NWHostEndpoint *)socketFlow.localEndpoint;
-    
+
     NSString *hostName = remoteEndpoint.hostname ?: @"";
     NSString *remotePortStr = remoteEndpoint.port ?: @"0";
     NSString *localPortStr  = localEndpoint.port ?: @"0";
-    
-    NSNumber *remotePort = @([remotePortStr integerValue]);
-    NSNumber *localPort  = @([localPortStr integerValue]);
-    NSData *processData = nil;
-    // 2. 获取进程信息（如果可用）
-    if (@available(macOS 13.0, *)) {
-        processData = socketFlow.sourceProcessAuditToken;
-    } else {
-        // Fallback on earlier versions
-    }
-    // 注意：company（代码签名组织）需要额外通过 SecCode API 获取，此处简化
-    
-    // 3. 协议和方向
+
+    NSInteger remotePort = [remotePortStr integerValue];
+    NSInteger localPort  = [localPortStr integerValue];
+
+    // 2. 协议判断
     BOOL isTCP = (socketFlow.socketProtocol == NENetworkRuleProtocolTCP);
     BOOL isUDP = (socketFlow.socketProtocol == NENetworkRuleProtocolUDP);
-    // 判断协议类型
     NSString *protoStr = isTCP ? @"tcp" : (isUDP ? @"udp" : @"other");
-    
-    NETrafficDirection direction = socketFlow.direction; // inbound or outbound
-    
-    // 4. 布隆过滤器检查（原有逻辑）
-#endif // ___JSON__
-    
+
+    // 3. 方向（通常 handleNewFlow 只处理 outbound，但保留判断）
+    NETrafficDirection direction = socketFlow.direction;
+
+    // 🔒 入站连接通常无法获取 hostname，直接放行（或丢弃）
+    if (direction == NETrafficDirectionInbound) {
+        // 可选：记录日志，但不拦截
+        return [NEFilterNewFlowVerdict allowVerdict];
+    }
+
+    // 4. 布隆过滤器：拦截恶意域名（高优先级）
 #ifdef __BLOOM__
     if (hostName.length > 0) {
         int result = bloom_check(&g_maliciousDomainBloom,
                                  [hostName UTF8String],
                                  (int)[hostName lengthOfBytesUsingEncoding:NSUTF8StringEncoding]);
         if (result == 1) {
-            NSLog(@"🚨 BLOCKING malicious domain: %@", hostName);
+            NSLog(@"🚨 BLOCKED by Bloom Filter: %@:%ld", hostName, (long)remotePort);
             return [NEFilterNewFlowVerdict dropVerdict];
         }
     }
 #endif
-    
-    NEFilterSocketFlow *socketFlow = (NEFilterSocketFlow*)flow;
-    NWHostEndpoint *remoteEndpoint = (NWHostEndpoint*)socketFlow.remoteEndpoint;
-    
-    NSString* _hostName = remoteEndpoint.hostname;
-    NSString* _port = remoteEndpoint.port;
-    
-    NSLog(@"=====[%@:%@] has sent the flow=====",_hostName,_port);
-    
-    return [NEFilterNewFlowVerdict filterDataVerdictWithFilterInbound:YES peekInboundBytes:64 filterOutbound:YES peekOutboundBytes:64];
+
+    // 5. JSON 规则匹配（按优先级顺序）
+#ifdef __JSON__
+    for (FirewallRule *rule in self.firewallRules) {
+        // 检查规则是否匹配当前流量:主机名、目的端口、本机端口、协议、方向
+        if ([rule matchesHostname:hostName
+                            remotePort:remotePort
+                            localPort:localPort
+                            protocol:protoStr
+                            direction:direction]) {
+
+            if ([rule.action isEqualToString:@"block"]) {
+                NSLog(@"BLOCKED by rule (level=%ld): %@:%ld proto=%@",
+                      (long)rule.level, hostName, (long)remotePort, protoStr);
+                return [NEFilterNewFlowVerdict dropVerdict];
+            } else if ([rule.action isEqualToString:@"allow"]) {
+                // 显式允许，可提前放行（避免后续规则覆盖）
+                NSLog(@"ALLOWED by rule (level=%ld): %@:%ld", (long)rule.level, hostName, (long)remotePort);
+                return [NEFilterNewFlowVerdict allowVerdict];
+            }
+            // 其他 action 类型可扩展
+        }
+    }
+#endif
+
+    // 6. 默认行为：允许连接，但监控出站数据（用于日志/分析）
+    NSLog(@"ℹ️ DEFAULT ALLOW: %@:%ld (%@)", hostName, (long)remotePort, protoStr);
+    return [NEFilterNewFlowVerdict filterDataVerdictWithFilterInbound:NO
+                                                      peekInboundBytes:0
+                                                     filterOutbound:YES
+                                                   peekOutboundBytes:64];
 }
 //本机向外发送的数据
 - (NEFilterDataVerdict *)handleOutboundDataCompleteForFlow:(NEFilterFlow *)flow{
@@ -158,8 +177,7 @@
 
     NSString* _hostName = remoteEndpoint.hostname;
     NSString* _port = remoteEndpoint.port;
-    
-    NSLog(@"=====[%@:%@] has sent the flow=====",_hostName,_port);
+    NSLog(@"=====[%@:%@] has received the flow=====",_hostName,_port);
     return [NEFilterDataVerdict allowVerdict];
 }
 #ifdef __JSON__

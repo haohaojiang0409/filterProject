@@ -11,7 +11,6 @@
 		44766DDC2ECF108900814D30 /* MurmurHash2.c in Sources */ = {isa = PBXBuildFile; fileRef = 44766DD92ECF108900814D30 /* MurmurHash2.c */; };
 		44766DDD2ECF108900814D30 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 44766DDA2ECF108900814D30 /* README */; };
 		44766DE02ED0099A00814D30 /* Rule.m in Sources */ = {isa = PBXBuildFile; fileRef = 44766DDF2ED0099800814D30 /* Rule.m */; };
-		44766DE22ED0113B00814D30 /* rule.json in Resources */ = {isa = PBXBuildFile; fileRef = 44766DE12ED0113B00814D30 /* rule.json */; };
 		63938C572A38BCD600734619 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 63938C562A38BCD600734619 /* AppDelegate.m */; };
 		63938C5A2A38BCD600734619 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63938C592A38BCD600734619 /* ViewController.m */; };
 		63938C5C2A38BCD800734619 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63938C5B2A38BCD800734619 /* Assets.xcassets */; };
@@ -87,7 +86,6 @@
 		44766DDA2ECF108900814D30 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		44766DDE2ED0099200814D30 /* Rule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rule.h; sourceTree = "<group>"; };
 		44766DDF2ED0099800814D30 /* Rule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Rule.m; sourceTree = "<group>"; };
-		44766DE12ED0113B00814D30 /* rule.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = rule.json; sourceTree = "<group>"; };
 		6378C61A2A47B85100E1D2C4 /* libEndpointSecurity.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libEndpointSecurity.tbd; path = usr/lib/libEndpointSecurity.tbd; sourceTree = SDKROOT; };
 		6378C62F2A47F1A400E1D2C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		63938C522A38BCD600734619 /* BorderControl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BorderControl.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -168,7 +166,6 @@
 				63938C582A38BCD600734619 /* ViewController.h */,
 				63938C592A38BCD600734619 /* ViewController.m */,
 				63938C5D2A38BCD800734619 /* Main.storyboard */,
-				44766DE12ED0113B00814D30 /* rule.json */,
 				63938C602A38BCD800734619 /* main.m */,
 				63938C5B2A38BCD800734619 /* Assets.xcassets */,
 				63938C622A38BCD800734619 /* BorderControl.entitlements */,
@@ -296,7 +293,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				44766DE22ED0113B00814D30 /* rule.json in Resources */,
 				44766DDD2ECF108900814D30 /* README in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

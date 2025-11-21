@@ -7,8 +7,9 @@
 
 #import <Foundation/Foundation.h>
 #import <NetworkExtension/NetworkExtension.h>
-//#import "bloom.h"
-//#import "Rule.h"
+#import "bloom.h"
+#import "Rule.h"
+#define __JSON__
 #ifdef __BLOOM__
 //静态布隆过滤器变量
 static struct bloom g_maliciousDomainBloom;
