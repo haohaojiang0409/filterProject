@@ -8,8 +8,11 @@
 #import <Foundation/Foundation.h>
 #import "NetworkExtension.h"
 
+//过滤数据包的网络插件
 NSString *const networkExtensionBundleId = @"com.eagleyun.BorderControl.Network";
 
+//DNS过滤的网络插件
+//NSString *const DNSProxyBundleId = @"com.eagleyun.BorderControl.FilterDNSProxy";
 @implementation NetworkExtension
 
 static NetworkExtension *sharedInstance = nil;
@@ -63,6 +66,7 @@ static NetworkExtension *sharedInstance = nil;
     [NEFilterManager.sharedManager saveToPreferencesWithCompletionHandler:^(NSError * _Nullable error) {
     }];
   }];
+    
 }
 
 - (void)requestNeedsUserApproval:(nonnull OSSystemExtensionRequest *)request {
